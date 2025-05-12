@@ -6,6 +6,6 @@
              x:DataType="local:MainPageViewModel"
              x:Class="MauiSample.MainPage">
 
-            <maplibre:MauiMapLibre BindingContext="{Binding MapLibreMap}" StyleUrl="https://tiles.stadiamaps.com/styles/osm_bright.json?api_key=20d43ebd-772b-4bc1-825f-c1c83147f124" />
+            <maplibre:MauiMapLibre BindingContext="{Binding MapLibreMap}" StyleUrl="https://demotiles.maplibre.org/style.json" />
 
 </ContentPage>
