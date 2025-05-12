@@ -2,8 +2,10 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:maplibre="clr-namespace:Maui.MapLibre.Handlers;assembly=Maui.Maplibre.Handlers"
+             xmlns:local="clr-namespace:MauiSample"
+             x:DataType="local:MainPageViewModel"
              x:Class="MauiSample.MainPage">
 
-            <maplibre:MauiMapLibre StyleUrl="https://demotiles.maplibre.org/style.json" />
+            <maplibre:MauiMapLibre BindingContext="{Binding MapLibreMap}" StyleUrl="https://tiles.stadiamaps.com/styles/osm_bright.json?api_key=20d43ebd-772b-4bc1-825f-c1c83147f124" />
 
 </ContentPage>
