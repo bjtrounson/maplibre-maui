@@ -17,7 +17,7 @@ public static class MauiProgram
 			})
             .ConfigureMauiHandlers(handlers =>
             {
-                handlers.AddHandler(typeof(MauiMapLibre), typeof(MauiMapLibreHandler));
+                handlers.AddHandler(typeof(MapLibreMap), typeof(MapLibreMapHandler));
             });
 
 #if DEBUG

@@ -21,7 +21,7 @@ using Style = Org.Maplibre.Android.Maps.Style;
 
 namespace Maui.MapLibre.Handlers;
 
-public class MapLibreMapController(Context context, MapLibreMapOptions options, bool dragEnabled, string? styleString)
+public class MapLibreMapController
     : Object,
     IMapLibreMapOptionsSink,
     Application.IActivityLifecycleCallbacks,
@@ -35,15 +35,16 @@ public class MapLibreMapController(Context context, MapLibreMapOptions options, 
     Org.Maplibre.Android.Maps.MapLibreMap.IOnMapLongClickListener,
     Style.IOnStyleLoaded
 {
-    private readonly MapView _mapView = new(context, options);
+    private readonly Context _context;
+    private readonly MapView _mapView;
     private Org.Maplibre.Android.Maps.MapLibreMap? _mapLibreMap;
     private Style? _style;
-    private MapLibreMapOptions _options = options;
-    private string? _styleString = styleString;
+    private MapLibreMapOptions _options;
+    private string? _styleString;
     private LatLngBounds? _bounds;
     private LocationComponent? _locationComponent;
     
-    private bool _dragEnabled = dragEnabled;
+    private bool _dragEnabled;
     private bool _trackCameraPosition;
     private bool _myLocationEnabled;
     private int _myLocationTrackingMode;
@@ -68,6 +69,15 @@ public class MapLibreMapController(Context context, MapLibreMapOptions options, 
     public event Action<Location>? OnUserLocationUpdateReceived;
 
     private LocationEngineCallbackListener? _onLocationEngineCallback;
+    
+    public MapLibreMapController(Context context, MapLibreMapOptions options, bool dragEnabled, string? styleString)
+    {
+        Org.Maplibre.Android.MapLibre.GetInstance(context);
+        _context = context;
+        _options = options;
+        _mapView = new MapView(context, options);
+        _styleString = styleString;
+    }
 
     public void Init()
     {
@@ -530,8 +540,8 @@ public class MapLibreMapController(Context context, MapLibreMapOptions options, 
     {
         ClearLocationComponentLayer();
         if (styleString == null) return;
-        if (_mapLibreMap == null) return;
         _styleString = styleString.Trim();
+        if (_mapLibreMap == null) return;
 
         if (_styleString.Length == 0) return;
 
@@ -568,8 +578,8 @@ public class MapLibreMapController(Context context, MapLibreMapOptions options, 
         if (locationEngineRequest == null) return;
 
         _locationComponent.LocationEngine = locationEngineRequest.Priority == LocationEngineRequest.PriorityHighAccuracy 
-            ? new LocationEngineProxy(new MapLibreGpsLocationEngine(context)) 
-            : LocationEngineDefault.Instance.GetDefaultLocationEngine(context);
+            ? new LocationEngineProxy(new MapLibreGpsLocationEngine(_context)) 
+            : LocationEngineDefault.Instance.GetDefaultLocationEngine(_context);
         _locationComponent.LocationEngineRequest = locationEngineRequest;
     }
 
@@ -744,7 +754,7 @@ public class MapLibreMapController(Context context, MapLibreMapOptions options, 
 
             _locationComponent = _mapLibreMap.LocationComponent;
 
-            var options = LocationComponentActivationOptions.InvokeBuilder(context, style)
+            var options = LocationComponentActivationOptions.InvokeBuilder(_context, style)
                 .LocationComponentOptions(BuildLocationComponentOptions(style))
                 ?.Build();
             if (options == null) return;
@@ -849,7 +859,7 @@ public class MapLibreMapController(Context context, MapLibreMapOptions options, 
     private LocationComponentOptions BuildLocationComponentOptions(Style? style)
     {
         var optionsBuilder =
-            LocationComponentOptions.InvokeBuilder(context);
+            LocationComponentOptions.InvokeBuilder(_context);
         optionsBuilder.TrackingGesturesManagement(true);
 
         var lastLayerId = GetLastLayerOnStyle(style);

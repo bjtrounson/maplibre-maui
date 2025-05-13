@@ -6,6 +6,6 @@
              x:DataType="local:MainPageViewModel"
              x:Class="MauiSample.MainPage">
 
-            <maplibre:MauiMapLibre BindingContext="{Binding MapLibreMap}" StyleUrl="https://demotiles.maplibre.org/style.json" />
+            <maplibre:MapLibreMap BindingContext="{Binding MapLibreMap}" StyleUrl="https://demotiles.maplibre.org/style.json" />
 
 </ContentPage>
