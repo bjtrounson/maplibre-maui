@@ -1,4 +1,6 @@
-﻿namespace MauiSample;
+﻿using Maui.MapLibre.Handlers;
+
+namespace MauiSample;
 public partial class MainPage : ContentPage
 {
 	public MainPage()

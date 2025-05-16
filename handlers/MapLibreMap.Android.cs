@@ -1,9 +1,7 @@
 ﻿#nullable enable
 
-using System.Text.Json;
 using Android.Views;
 using Android.Widget;
-using Maui.MapLibre.Handlers.Annotation.Properties;
 using View = Android.Views.View;
 
 namespace Maui.MapLibre.Handlers;
@@ -29,6 +27,9 @@ public partial class MapLibreMapHandler
         if (context == null) throw new InvalidOperationException("MapLibreMapHandler requires a valid context.");
 
         _controller = MapLibreMapFactory.Create(activity, context, options);
+
+        _controller.OnMapReadyReceived += _ => VirtualView.OnMapReady();
+        _controller.OnStyleLoadedReceived += _ => VirtualView.OnStyleLoaded();
         
         // Init and then return the map view
         _controller.Init();
@@ -96,9 +97,13 @@ public partial class MapLibreMapHandler
         _controller.SetMyLocationRenderMode(myLocationRenderMode);
     }
 
-    public void UpdateLogoViewMargins(int x, int y)
+    public void UpdateLogoViewMargins(int?[]? margin)
     {
-        _controller.SetLogoViewMargins(x, y);
+        if (margin == null) return;
+        var x = margin[0];
+        var y = margin[1];
+        if (x == null || y == null) return;
+        _controller.SetLogoViewMargins((int) x, (int) y);
     }
     
     public void UpdateCompassGravity(int compassGravity)
@@ -106,9 +111,13 @@ public partial class MapLibreMapHandler
         _controller.SetCompassGravity(compassGravity);
     }
     
-    public void UpdateCompassViewMargins(int x, int y)
+    public void UpdateCompassViewMargins(int?[]? margin)
     {
-        _controller.SetCompassViewMargins(x, y);
+        if (margin == null) return;
+        var x = margin[0];
+        var y = margin[1];
+        if (x == null || y == null) return;
+        _controller.SetCompassViewMargins((int)x, (int)y);
     }
     
     public void UpdateAttributionButtonGravity(int attributionButtonGravity)
@@ -116,14 +125,12 @@ public partial class MapLibreMapHandler
         _controller.SetAttributionButtonGravity(attributionButtonGravity);
     }
     
-    public void UpdateAttributionButtonMargins(int x, int y)
+    public void UpdateAttributionButtonMargins(int?[]? margin)
     {
-        _controller.SetAttributionButtonMargins(x, y);
-    }
-    
-    public void AddLineLayer(string layerName, string sourceName, string? belowLayerId, string? sourceLayer, LineLayerProperties properties, int minZoom, int maxZoom, bool enableInteraction)
-    {
-        var propertyValues = properties.ToDictionary();
-        _controller.AddLineLayer(layerName, sourceName, belowLayerId, sourceLayer, propertyValues, null, minZoom, maxZoom, enableInteraction);
+        if (margin == null) return;
+        var x = margin[0];
+        var y = margin[1];
+        if (x == null || y == null) return;
+        _controller.SetAttributionButtonMargins((int)x, (int)y);
     }
 }

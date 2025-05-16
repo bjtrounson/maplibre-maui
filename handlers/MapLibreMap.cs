@@ -1,23 +1,14 @@
-﻿using Maui.MapLibre.Handlers.Annotation;
+﻿using System.Text.Json;
+using GeoJSON.Text.Feature;
+using Maui.MapLibre.Handlers.Annotation;
 using Maui.MapLibre.Handlers.Annotation.Properties;
 using Microsoft.Maui.Handlers;
 
 namespace Maui.MapLibre.Handlers;
 
 // All the code in this file is included in all platforms.
-public class MapLibreMap : View
+public class MapLibreMap : StackLayout
 {
-    private LineManager? _lineManager;
-    private MapLibreMapController? _controller;
-    
-    public MapLibreMap()
-    {
-        if (Handler is MapLibreMapHandler handler)
-        {
-            _controller = handler.Controller;
-            _lineManager = new LineManager(handler.Controller);
-        }
-    }
     
     public static readonly BindableProperty StyleUrlProperty = BindableProperty.Create(nameof(StyleUrl), typeof(string), typeof(MapLibreMap));
     public static readonly BindableProperty MinZoomProperty = BindableProperty.Create(nameof(MinZoom), typeof(float), typeof(MapLibreMap));
@@ -30,11 +21,11 @@ public class MapLibreMap : View
     public static readonly BindableProperty MyLocationEnabledProperty = BindableProperty.Create(nameof(MyLocationEnabled), typeof(bool), typeof(MapLibreMap));
     public static readonly BindableProperty MyLocationTrackingModeProperty = BindableProperty.Create(nameof(MyLocationTrackingMode), typeof(int), typeof(MapLibreMap));
     public static readonly BindableProperty MyLocationRenderModeProperty = BindableProperty.Create(nameof(MyLocationRenderMode), typeof(int), typeof(MapLibreMap));
-    public static readonly BindableProperty LogoViewMarginsProperty = BindableProperty.Create(nameof(LogoViewMargins), typeof(int), typeof(MapLibreMap));
+    public static readonly BindableProperty LogoViewMarginsProperty = BindableProperty.Create(nameof(LogoViewMargins), typeof(int?[]), typeof(MapLibreMap));
     public static readonly BindableProperty CompassGravityProperty = BindableProperty.Create(nameof(CompassGravity), typeof(int), typeof(MapLibreMap));
-    public static readonly BindableProperty CompassViewMarginsProperty = BindableProperty.Create(nameof(CompassViewMargins), typeof(int), typeof(MapLibreMap));
+    public static readonly BindableProperty CompassViewMarginsProperty = BindableProperty.Create(nameof(CompassViewMargins), typeof(int?[]), typeof(MapLibreMap));
     public static readonly BindableProperty AttributionButtonGravityProperty = BindableProperty.Create(nameof(AttributionButtonGravity), typeof(int), typeof(MapLibreMap));
-    public static readonly BindableProperty AttributionButtonMarginsProperty = BindableProperty.Create(nameof(AttributionButtonMargins), typeof(int), typeof(MapLibreMap));
+    public static readonly BindableProperty AttributionButtonMarginsProperty = BindableProperty.Create(nameof(AttributionButtonMargins), typeof(int?[]), typeof(MapLibreMap));
         
 
     public string StyleUrl
@@ -103,9 +94,9 @@ public class MapLibreMap : View
         set => SetValue(MyLocationRenderModeProperty, value);
     }
     
-    public int LogoViewMargins
+    public int?[]? LogoViewMargins
     {
-        get => (int)GetValue(LogoViewMarginsProperty);
+        get => (int?[])GetValue(LogoViewMarginsProperty);
         set => SetValue(LogoViewMarginsProperty, value);
     }
     
@@ -115,9 +106,9 @@ public class MapLibreMap : View
         set => SetValue(CompassGravityProperty, value);
     }
     
-    public int CompassViewMargins
+    public int?[]? CompassViewMargins
     {
-        get => (int)GetValue(CompassViewMarginsProperty);
+        get => (int?[])GetValue(CompassViewMarginsProperty);
         set => SetValue(CompassViewMarginsProperty, value);
     }
     
@@ -127,16 +118,137 @@ public class MapLibreMap : View
         set => SetValue(AttributionButtonGravityProperty, value);
     }
     
-    public int AttributionButtonMargins
+    public int?[]? AttributionButtonMargins
     {
-        get => (int)GetValue(AttributionButtonMarginsProperty);
+        get => (int?[])GetValue(AttributionButtonMarginsProperty);
         set => SetValue(AttributionButtonMarginsProperty, value);
     }
-    
-    public void AddLineLayer(string layerName, string sourceName, string? belowLayerId, string? sourceLayer, LineLayerProperties properties, int minZoom, int maxZoom, bool enableInteraction)
+
+    public void AddGeoJsonSource(string sourceName, FeatureCollection collection)
     {
+        if (Handler is not MapLibreMapHandler handler) return;
+        var controller = handler.Controller;
+        var json = JsonSerializer.Serialize(collection);
+        controller.AddGeoJsonSource(sourceName, json);
+    }
+
+    public void AddLineLayer(
+        string layerName,
+        string sourceName,
+        string? belowLayerId,
+        string? sourceLayer,
+        LineLayerProperties properties,
+        float minZoom = 0,
+        float maxZoom = 0,
+        bool enableInteraction = false)
+    {
+        if (Handler is not MapLibreMapHandler handler) return;
+        var controller = handler.Controller;
         var propertyValues = properties.ToDictionary();
-        _controller?.AddLineLayer(layerName, sourceName, belowLayerId, sourceLayer, propertyValues, null, minZoom, maxZoom, enableInteraction);
+        controller.AddLineLayer(layerName, sourceName, belowLayerId, sourceLayer, propertyValues, null, minZoom, maxZoom, enableInteraction);
+    }
+    
+    public void AddSymbolLayer(
+        string layerName,
+        string sourceName,
+        string? belowLayerId,
+        string? sourceLayer,
+        IDictionary<string, object?> properties,
+        float minZoom = 0,
+        float maxZoom = 0,
+        bool enableInteraction = false)
+    {
+        if (Handler is not MapLibreMapHandler handler) return;
+        var controller = handler.Controller;
+        controller.AddLineLayer(layerName, sourceName, belowLayerId, sourceLayer, properties, null, minZoom, maxZoom, enableInteraction);
+    }
+    
+    public void AddCircleLayer(
+        string layerName,
+        string sourceName,
+        string? belowLayerId,
+        string? sourceLayer,
+        IDictionary<string, object?> properties,
+        float minZoom = 0,
+        float maxZoom = 0,
+        bool enableInteraction = false)
+    {
+        if (Handler is not MapLibreMapHandler handler) return;
+        var controller = handler.Controller;
+        controller.AddLineLayer(layerName, sourceName, belowLayerId, sourceLayer, properties, null, minZoom, maxZoom, enableInteraction);
+    }
+
+    public void AddFillLayer(
+        string layerName,
+        string sourceName,
+        string? belowLayerId,
+        string? sourceLayer,
+        IDictionary<string, object?> properties,
+        float minZoom = 0,
+        float maxZoom = 0,
+        bool enableInteraction = false)
+    {
+        if (Handler is not MapLibreMapHandler handler) return;
+        var controller = handler.Controller;
+        controller.AddLineLayer(layerName, sourceName, belowLayerId, sourceLayer, properties, null, minZoom, maxZoom, enableInteraction);
+    }
+    
+    public void AddRasterLayer(
+        string layerName,
+        string sourceName,
+        string? belowLayerId,
+        string? sourceLayer,
+        IDictionary<string, object?> properties,
+        float minZoom = 0,
+        float maxZoom = 0,
+        bool enableInteraction = false)
+    {
+        if (Handler is not MapLibreMapHandler handler) return;
+        var controller = handler.Controller;
+        controller.AddLineLayer(layerName, sourceName, belowLayerId, sourceLayer, properties, null, minZoom, maxZoom, enableInteraction);
+    }
+
+    public void AddHillshadeLayer(
+        string layerName,
+        string sourceName,
+        string? belowLayerId,
+        string? sourceLayer,
+        IDictionary<string, object?> properties,
+        float minZoom = 0,
+        float maxZoom = 0,
+        bool enableInteraction = false)
+    {
+        if (Handler is not MapLibreMapHandler handler) return;
+        var controller = handler.Controller;
+        controller.AddLineLayer(layerName, sourceName, belowLayerId, sourceLayer, properties, null, minZoom, maxZoom, enableInteraction);
+    }
+
+    public void AddHeatmapLayer(
+        string layerName,
+        string sourceName,
+        string? belowLayerId,
+        string? sourceLayer,
+        IDictionary<string, object?> properties,
+        float minZoom = 0,
+        float maxZoom = 0,
+        bool enableInteraction = false)
+    {
+        if (Handler is not MapLibreMapHandler handler) return;
+        var controller = handler.Controller;
+        controller.AddLineLayer(layerName, sourceName, belowLayerId, sourceLayer, properties, null, minZoom, maxZoom, enableInteraction);
+    }
+    
+    public event EventHandler? MapReady;
+    public event EventHandler? StyleLoaded;
+    
+    internal void OnMapReady()
+    {
+        MapReady?.Invoke(this, EventArgs.Empty);
+    }
+    
+    internal void OnStyleLoaded()
+    {
+        StyleLoaded?.Invoke(this, EventArgs.Empty);
     }
 }
 
@@ -156,11 +268,11 @@ public partial class MapLibreMapHandler() : ViewHandler<MapLibreMap, global::And
             [nameof(MapLibreMap.MyLocationEnabled)] = MapMyLocationEnabled,
             [nameof(MapLibreMap.MyLocationTrackingMode)] = MapMyLocationTrackingMode,
             [nameof(MapLibreMap.MyLocationRenderMode)] = MapMyLocationRenderMode,
-            //[nameof(MauiMapLibre.LogoViewMargins)] = MapLogoViewMargins,
+            [nameof(MapLibreMap.LogoViewMargins)] = MapLogoViewMargins,
             [nameof(MapLibreMap.CompassGravity)] = MapCompassGravity,
-            //[nameof(MauiMapLibre.CompassViewMargins)] = MapCompassViewMargins,
+            [nameof(MapLibreMap.CompassViewMargins)] = MapCompassViewMargins,
             [nameof(MapLibreMap.AttributionButtonGravity)] = MapAttributionButtonGravity,
-            //[nameof(MauiMapLibre.AttributionButtonMargins)] = MapAttributionButtonMargins,
+            [nameof(MapLibreMap.AttributionButtonMargins)] = MapAttributionButtonMargins,
         };
     
     public static void MapStyleUrl(MapLibreMapHandler handler, MapLibreMap view)
@@ -212,14 +324,14 @@ public partial class MapLibreMapHandler() : ViewHandler<MapLibreMap, global::And
     
     public static void MapMyLocationRenderMode(MapLibreMapHandler handler, MapLibreMap view) => handler.UpdateMyLocationRenderMode(view.MyLocationRenderMode);
     
-    //public static void MapLogoViewMargins(MauiMapLibreHandler handler, MauiMapLibre view) => handler.UpdateLogoViewMargins(view.LogoViewMargins);
+    public static void MapLogoViewMargins(MapLibreMapHandler handler, MapLibreMap view) => handler.UpdateLogoViewMargins(view.LogoViewMargins);
     
     public static void MapCompassGravity(MapLibreMapHandler handler, MapLibreMap view) => handler.UpdateCompassGravity(view.CompassGravity);
     
-    //public static void MapCompassViewMargins(MauiMapLibreHandler handler, MauiMapLibre view) => handler.UpdateCompassViewMargins(view.CompassViewMargins);
+    public static void MapCompassViewMargins(MapLibreMapHandler handler, MapLibreMap view) => handler.UpdateCompassViewMargins(view.CompassViewMargins);
     
     public static void MapAttributionButtonGravity(MapLibreMapHandler handler, MapLibreMap view) => handler.UpdateAttributionButtonGravity(view.AttributionButtonGravity);
     
-    //public static void MapAttributionButtonMargins(MauiMapLibreHandler handler, MauiMapLibre view) => handler.UpdateAttributionButtonMargins(view.AttributionButtonMargins);
+    public static void MapAttributionButtonMargins(MapLibreMapHandler handler, MapLibreMap view) => handler.UpdateAttributionButtonMargins(view.AttributionButtonMargins);
 }
 

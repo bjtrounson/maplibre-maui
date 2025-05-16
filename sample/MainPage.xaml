@@ -2,10 +2,21 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:maplibre="clr-namespace:Maui.MapLibre.Handlers;assembly=Maui.Maplibre.Handlers"
+             xmlns:layers="clr-namespace:Maui.MapLibre.Handlers.Layers;assembly=Maui.Maplibre.Handlers"
              xmlns:local="clr-namespace:MauiSample"
              x:DataType="local:MainPageViewModel"
              x:Class="MauiSample.MainPage">
-
-            <maplibre:MapLibreMap BindingContext="{Binding MapLibreMap}" StyleUrl="https://demotiles.maplibre.org/style.json" />
-
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="40" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <maplibre:MapLibreMap Grid.Row="0" MyLocationEnabled="True" StyleUrl="https://demotiles.maplibre.org/style.json">
+            <layers:GeoJsonSource SourceName="{Binding SourceName}" FeatureCollection="{Binding Collection}" />
+            <layers:LineLayer SourceName="{Binding SourceName}" LayerName="{Binding LayerName}" Properties="{Binding LayerProperties}" />
+        </maplibre:MapLibreMap>
+    </Grid>
 </ContentPage>

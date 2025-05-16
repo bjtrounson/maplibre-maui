@@ -1,5 +1,5 @@
-using GeoJSON.Net.Feature;
-using GeoJSON.Net.Geometry;
+using GeoJSON.Text.Feature;
+using GeoJSON.Text.Geometry;
 using Maui.MapLibre.Handlers.Annotation.Properties;
 
 namespace Maui.MapLibre.Handlers.Annotation;

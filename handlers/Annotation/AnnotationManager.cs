@@ -1,5 +1,3 @@
-using GeoJSON.Net.Geometry;
-using Org.Maplibre.Android.Style.Expressions;
 using Maui.MapLibre.Handlers.Annotation.Properties;
 
 namespace Maui.MapLibre.Handlers.Annotation;
