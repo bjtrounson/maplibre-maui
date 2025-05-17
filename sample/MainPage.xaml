@@ -4,6 +4,7 @@
              xmlns:maplibre="clr-namespace:Maui.MapLibre.Handlers;assembly=Maui.Maplibre.Handlers"
              xmlns:layers="clr-namespace:Maui.MapLibre.Handlers.Layers;assembly=Maui.Maplibre.Handlers"
              xmlns:local="clr-namespace:MauiSample"
+             xmlns:sources="clr-namespace:Maui.MapLibre.Handlers.Sources;assembly=Maui.Maplibre.Handlers"
              x:DataType="local:MainPageViewModel"
              x:Class="MauiSample.MainPage">
     <Grid>
@@ -15,7 +16,7 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <maplibre:MapLibreMap Grid.Row="0" MyLocationEnabled="True" StyleUrl="https://demotiles.maplibre.org/style.json">
-            <layers:GeoJsonSource SourceName="{Binding SourceName}" FeatureCollection="{Binding Collection}" />
+            <sources:GeoJsonSource SourceName="{Binding SourceName}" FeatureCollection="{Binding Collection}" />
             <layers:LineLayer SourceName="{Binding SourceName}" LayerName="{Binding LayerName}" Properties="{Binding LayerProperties}" />
         </maplibre:MapLibreMap>
     </Grid>

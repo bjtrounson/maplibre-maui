@@ -1,7 +1,6 @@
 ﻿using System.Text.Json;
 using GeoJSON.Text.Feature;
-using Maui.MapLibre.Handlers.Annotation;
-using Maui.MapLibre.Handlers.Annotation.Properties;
+using Maui.MapLibre.Handlers.Properties;
 using Microsoft.Maui.Handlers;
 
 namespace Maui.MapLibre.Handlers;
@@ -9,7 +8,6 @@ namespace Maui.MapLibre.Handlers;
 // All the code in this file is included in all platforms.
 public class MapLibreMap : StackLayout
 {
-    
     public static readonly BindableProperty StyleUrlProperty = BindableProperty.Create(nameof(StyleUrl), typeof(string), typeof(MapLibreMap));
     public static readonly BindableProperty MinZoomProperty = BindableProperty.Create(nameof(MinZoom), typeof(float), typeof(MapLibreMap));
     public static readonly BindableProperty MaxZoomProperty = BindableProperty.Create(nameof(MaxZoom), typeof(float), typeof(MapLibreMap));
@@ -274,6 +272,11 @@ public partial class MapLibreMapHandler() : ViewHandler<MapLibreMap, global::And
             [nameof(MapLibreMap.AttributionButtonGravity)] = MapAttributionButtonGravity,
             [nameof(MapLibreMap.AttributionButtonMargins)] = MapAttributionButtonMargins,
         };
+    
+    public static ICommandMapper<MapLibreMap, MapLibreMapHandler> CommandMapper = new CommandMapper<MapLibreMap, MapLibreMapHandler>(ViewCommandMapper)
+    {
+        
+    }
     
     public static void MapStyleUrl(MapLibreMapHandler handler, MapLibreMap view)
     {

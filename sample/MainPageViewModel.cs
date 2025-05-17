@@ -1,7 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using GeoJSON.Text.Feature;
 using GeoJSON.Text.Geometry;
-using Maui.MapLibre.Handlers.Annotation.Properties;
+using Maui.MapLibre.Handlers.Properties;
 
 namespace MauiSample;
 

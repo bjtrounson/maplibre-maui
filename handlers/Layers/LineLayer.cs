@@ -1,8 +1,9 @@
-using Maui.MapLibre.Handlers.Annotation.Properties;
+using Maui.MapLibre.Handlers.Annotation;
+using Maui.MapLibre.Handlers.Properties;
 
 namespace Maui.MapLibre.Handlers.Layers;
 
-public class LineLayer : ContentView
+public class LineLayer : StyleView
 {
     // Bindable properties for LineLayer parameters
     public static readonly BindableProperty LayerNameProperty = BindableProperty.Create(nameof(LayerName), typeof(string), typeof(LineLayer), null, propertyChanged: OnPropertiesChanged);
@@ -66,25 +67,7 @@ public class LineLayer : ContentView
         // You could trigger adding here
     }
     
-    private bool _isAdded = false;
-
-    protected override void OnParentChanged()
-    {
-        base.OnParentChanged();
-        if (_isAdded) return;
-        var parentMap = FindParentMapLibreMap(this);
-        if (parentMap == null) return;
-
-        parentMap.StyleLoaded += OnStyleLoaded;
-    }
-
-    private void OnStyleLoaded(object? sender, EventArgs e)
-    {
-        AddLayerToParentMap();
-        _isAdded = true;
-    }
-    
-    private void AddLayerToParentMap()
+    protected override void AddLayerToParentMap()
     {
         var parentMap = FindParentMapLibreMap(this);
         if (parentMap == null) return;
@@ -92,19 +75,5 @@ public class LineLayer : ContentView
         if (string.IsNullOrEmpty(SourceName)) return;
         if (Properties == null) return;
         parentMap.AddLineLayer(LayerName, SourceName, BelowLayerId, SourceLayer, Properties, MinZoom, MaxZoom, EnableInteraction);
-    }
-
-    private static MapLibreMap? FindParentMapLibreMap(Element element)
-    {
-        var parent = element.Parent;
-        while (parent != null)
-        {
-            if (parent is MapLibreMap map)
-            {
-                return map;
-            }
-            parent = parent.Parent;
-        }
-        return null;
     }
 }

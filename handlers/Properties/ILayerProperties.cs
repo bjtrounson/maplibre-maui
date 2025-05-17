@@ -1,4 +1,4 @@
-namespace Maui.MapLibre.Handlers.Annotation.Properties;
+namespace Maui.MapLibre.Handlers.Properties;
 
 public interface ILayerProperties
 {
