@@ -30,6 +30,15 @@ public partial class MapLibreMapHandler
 
         _controller.OnMapReadyReceived += _ => VirtualView.OnMapReady();
         _controller.OnStyleLoadedReceived += _ => VirtualView.OnStyleLoaded();
+        _controller.OnDidBecomeIdleReceived += VirtualView.OnDidBecomeIdle;
+        _controller.OnCameraMoveStartedReceived += _ => VirtualView.OnCameraMoveStarted();
+        _controller.OnCameraMoveReceived += VirtualView.OnCameraMove;
+        _controller.OnCameraIdleReceived += VirtualView.OnCameraIdle;
+        _controller.OnCameraTrackingChangedReceived += _ => VirtualView.OnCameraTrackingChanged();
+        _controller.OnCameraTrackingDismissedReceived += VirtualView.OnCameraTrackingDismissed;
+        //_controller.OnMapClickReceived += _ => VirtualView.OnMapClick();
+        //_controller.OnMapLongClickReceived += _ => VirtualView.OnMapLongClick();
+        _controller.OnUserLocationUpdateReceived += _ => VirtualView.OnUserLocationUpdate();
         
         // Init and then return the map view
         _controller.Init();
