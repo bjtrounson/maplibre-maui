@@ -1,8 +1,11 @@
-# MAUI MapLibre
+# MapLibre MAUI
 
-A MAUI wrapper for the [MapLibre](https://maplibre.org/) library.
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)](/LICENSE.md)
 
-This is a work in progress and is not yet ready for production use. The API is likely to change.
+_.NET MAUI library for creating maps
+with [MapLibre Native for Android, iOS & macOS](https://github.com/maplibre/maplibre-gl-native)._
+
+I created this project as I needed to use MapLibre for a project at work in our MAUI app that we migrated from Xamarin.
 
 ## Getting started
 ```xaml
