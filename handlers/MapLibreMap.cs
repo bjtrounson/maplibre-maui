@@ -262,14 +262,15 @@ public class MapLibreMap : StackLayout
         string sourceName,
         string? belowLayerId,
         string? sourceLayer,
-        IDictionary<string, object?> properties,
+        SymbolLayerProperties properties,
         float minZoom = 0,
         float maxZoom = 0,
         bool enableInteraction = false)
     {
         if (Handler is not MapLibreMapHandler handler) return;
         var controller = handler.Controller;
-        controller.AddLineLayer(layerName, sourceName, belowLayerId, sourceLayer, properties, minZoom, maxZoom, enableInteraction);
+        var propertyValues = properties.ToDictionary();
+        controller.AddSymbolLayer(layerName, sourceName, belowLayerId, sourceLayer, propertyValues, minZoom, maxZoom, enableInteraction);
     }
     
     public void AddCircleLayer(
@@ -277,14 +278,15 @@ public class MapLibreMap : StackLayout
         string sourceName,
         string? belowLayerId,
         string? sourceLayer,
-        IDictionary<string, object?> properties,
+        CircleLayerProperties properties,
         float minZoom = 0,
         float maxZoom = 0,
         bool enableInteraction = false)
     {
         if (Handler is not MapLibreMapHandler handler) return;
         var controller = handler.Controller;
-        controller.AddLineLayer(layerName, sourceName, belowLayerId, sourceLayer, properties, minZoom, maxZoom, enableInteraction);
+        var propertyValues = properties.ToDictionary();
+        controller.AddCircleLayer(layerName, sourceName, belowLayerId, sourceLayer, propertyValues, minZoom, maxZoom, enableInteraction);
     }
 
     public void AddFillLayer(
@@ -292,59 +294,59 @@ public class MapLibreMap : StackLayout
         string sourceName,
         string? belowLayerId,
         string? sourceLayer,
-        IDictionary<string, object?> properties,
+        FillLayerProperties properties,
         float minZoom = 0,
         float maxZoom = 0,
         bool enableInteraction = false)
     {
         if (Handler is not MapLibreMapHandler handler) return;
         var controller = handler.Controller;
-        controller.AddLineLayer(layerName, sourceName, belowLayerId, sourceLayer, properties, minZoom, maxZoom, enableInteraction);
+        var propertyValues = properties.ToDictionary();
+        controller.AddFillLayer(layerName, sourceName, belowLayerId, sourceLayer, propertyValues, minZoom, maxZoom, enableInteraction);
+    }
+
+    public void AddFillExtrusionLayer(
+        string layerName,
+        string sourceName,
+        string? belowLayerId,
+        string? sourceLayer,
+        FillExtrusionLayerProperties properties,
+        float minZoom = 0,
+        float maxZoom = 0,
+        bool enableInteraction = false)
+    {
+        if (Handler is not MapLibreMapHandler handler) return;
+        var controller = handler.Controller;
+        var propertyValues = properties.ToDictionary();
+        controller.AddFillExtrusionLayer(layerName, sourceName, belowLayerId, sourceLayer, propertyValues, minZoom, maxZoom, enableInteraction);
     }
     
     public void AddRasterLayer(
         string layerName,
         string sourceName,
         string? belowLayerId,
-        string? sourceLayer,
-        IDictionary<string, object?> properties,
+        RasterLayerProperties properties,
         float minZoom = 0,
-        float maxZoom = 0,
-        bool enableInteraction = false)
+        float maxZoom = 0)
     {
         if (Handler is not MapLibreMapHandler handler) return;
         var controller = handler.Controller;
-        controller.AddLineLayer(layerName, sourceName, belowLayerId, sourceLayer, properties, minZoom, maxZoom, enableInteraction);
-    }
-
-    public void AddHillshadeLayer(
-        string layerName,
-        string sourceName,
-        string? belowLayerId,
-        string? sourceLayer,
-        IDictionary<string, object?> properties,
-        float minZoom = 0,
-        float maxZoom = 0,
-        bool enableInteraction = false)
-    {
-        if (Handler is not MapLibreMapHandler handler) return;
-        var controller = handler.Controller;
-        controller.AddLineLayer(layerName, sourceName, belowLayerId, sourceLayer, properties, minZoom, maxZoom, enableInteraction);
+        var propertyValues = properties.ToDictionary();
+        controller.AddRasterLayer(layerName, sourceName, propertyValues, minZoom, maxZoom, belowLayerId);
     }
 
     public void AddHeatmapLayer(
         string layerName,
         string sourceName,
         string? belowLayerId,
-        string? sourceLayer,
-        IDictionary<string, object?> properties,
+        HeatmapProperties properties,
         float minZoom = 0,
-        float maxZoom = 0,
-        bool enableInteraction = false)
+        float maxZoom = 0)
     {
         if (Handler is not MapLibreMapHandler handler) return;
         var controller = handler.Controller;
-        controller.AddLineLayer(layerName, sourceName, belowLayerId, sourceLayer, properties, minZoom, maxZoom, enableInteraction);
+        var propertyValues = properties.ToDictionary();
+        controller.AddHeatmapLayer(layerName, sourceName, propertyValues, minZoom, maxZoom, belowLayerId);
     }
     
     // TODO Map parameter may want to return the controller here. 

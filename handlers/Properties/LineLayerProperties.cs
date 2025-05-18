@@ -74,29 +74,6 @@ public class LineLayerProperties(
     [JsonPropertyName("visibility")]
     public string? Visibility { get; set; } = visibility;
 
-    public LineLayerProperties CopyWith(LineLayerProperties changes)
-    {
-        return new LineLayerProperties(
-            lineOpacity: changes.LineOpacity ?? LineOpacity,
-            lineColor: changes.LineColor ?? LineColor,
-            lineTranslate: changes.LineTranslate ?? LineTranslate,
-            lineTranslateAnchor: changes.LineTranslateAnchor ?? LineTranslateAnchor,
-            lineWidth: changes.LineWidth ?? LineWidth,
-            lineGapWidth: changes.LineGapWidth ?? LineGapWidth,
-            lineOffset: changes.LineOffset ?? LineOffset,
-            lineBlur: changes.LineBlur ?? LineBlur,
-            lineDasharray: changes.LineDasharray ?? LineDasharray,
-            linePattern: changes.LinePattern ?? LinePattern,
-            lineGradient: changes.LineGradient ?? LineGradient,
-            lineCap: changes.LineCap ?? LineCap,
-            lineJoin: changes.LineJoin ?? LineJoin,
-            lineMiterLimit: changes.LineMiterLimit ?? LineMiterLimit,
-            lineRoundLimit: changes.LineRoundLimit ?? LineRoundLimit,
-            lineSortKey: changes.LineSortKey ?? LineSortKey,
-            visibility: changes.Visibility ?? Visibility
-        );
-    }
-
     public void FromJson(string json)
     {
         var options = JsonSerializer.Deserialize<LineLayerProperties>(json);

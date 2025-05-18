@@ -2,7 +2,7 @@ using Maui.MapLibre.Handlers.Properties;
 
 namespace Maui.MapLibre.Handlers.Layers;
 
-public class HeatmapLayer : LayerView<HeatmapProperties>
+public class FillExtrusionLayer : LayerView<FillExtrusionLayerProperties>
 {
     protected override void AddLayerToParentMap()
     {
@@ -11,6 +11,6 @@ public class HeatmapLayer : LayerView<HeatmapProperties>
         if(string.IsNullOrEmpty(LayerName)) return;
         if (string.IsNullOrEmpty(SourceName)) return;
         if (Properties == null) return;
-        parentMap.AddHeatmapLayer(LayerName, SourceName, BelowLayerId, Properties, MinZoom, MaxZoom);
+        parentMap.AddFillExtrusionLayer(LayerName, SourceName, BelowLayerId, SourceLayer, Properties, MinZoom, MaxZoom, EnableInteraction);
     }
 }
