@@ -11,7 +11,7 @@ public partial class MapLibreMapHandler
     private MapLibreMapController _controller = null!;
     private string _styleUrl = null!;
     
-    public MapLibreMapController Controller => _controller;
+    public IMapLibreMapController Controller => _controller;
 
     protected override View CreatePlatformView()
     {
@@ -28,17 +28,17 @@ public partial class MapLibreMapHandler
 
         _controller = MapLibreMapFactory.Create(activity, context, options);
 
-        _controller.OnMapReadyReceived += _ => VirtualView.OnMapReady();
-        _controller.OnStyleLoadedReceived += _ => VirtualView.OnStyleLoaded();
+        _controller.OnMapReadyReceived += VirtualView.OnMapReady;
+        _controller.OnStyleLoadedReceived += VirtualView.OnStyleLoaded;
         _controller.OnDidBecomeIdleReceived += VirtualView.OnDidBecomeIdle;
-        _controller.OnCameraMoveStartedReceived += _ => VirtualView.OnCameraMoveStarted();
+        _controller.OnCameraMoveStartedReceived += VirtualView.OnCameraMoveStarted;
         _controller.OnCameraMoveReceived += VirtualView.OnCameraMove;
         _controller.OnCameraIdleReceived += VirtualView.OnCameraIdle;
-        _controller.OnCameraTrackingChangedReceived += _ => VirtualView.OnCameraTrackingChanged();
+        _controller.OnCameraTrackingChangedReceived += VirtualView.OnCameraTrackingChanged;
         _controller.OnCameraTrackingDismissedReceived += VirtualView.OnCameraTrackingDismissed;
-        //_controller.OnMapClickReceived += _ => VirtualView.OnMapClick();
-        //_controller.OnMapLongClickReceived += _ => VirtualView.OnMapLongClick();
-        _controller.OnUserLocationUpdateReceived += _ => VirtualView.OnUserLocationUpdate();
+        _controller.OnMapClickReceived += VirtualView.OnMapClick;
+        _controller.OnMapLongClickReceived += VirtualView.OnMapLongClick;
+        _controller.OnUserLocationUpdateReceived += VirtualView.OnUserLocationUpdate;
         
         // Init and then return the map view
         _controller.Init();

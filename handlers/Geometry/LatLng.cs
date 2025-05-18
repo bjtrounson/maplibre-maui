@@ -1,10 +1,10 @@
 namespace Maui.MapLibre.Handlers.Geometry;
 
-public class LatLng
+public class LatLng(double latitude, double longitude)
 {
-    public double Latitude { get; set; }
-    public double Longitude { get; set; }
-    
+    public double Latitude { get; set; } = latitude;
+    public double Longitude { get; set; } = longitude;
+
     public object? ToPlatform()
     {
 #if ANDROID

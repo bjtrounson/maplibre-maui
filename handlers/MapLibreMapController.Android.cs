@@ -10,7 +10,6 @@ using Org.Maplibre.Android.Location;
 using Org.Maplibre.Android.Location.Engine;
 using Org.Maplibre.Android.Location.Modes;
 using Org.Maplibre.Android.Maps;
-using Org.Maplibre.Android.Style.Expressions;
 using Org.Maplibre.Android.Style.Layers;
 using Org.Maplibre.Android.Style.Sources;
 using Org.Maplibre.Geojson;
@@ -19,14 +18,13 @@ using Location = Android.Locations.Location;
 using Exception = System.Exception;
 using ImageSource = Org.Maplibre.Android.Style.Sources.ImageSource;
 using LatLngQuad = Maui.MapLibre.Handlers.Geometry.LatLngQuad;
+using Map = Maui.MapLibre.Handlers.Maps.Map;
 using Object = Java.Lang.Object;
 using Style = Org.Maplibre.Android.Maps.Style;
 
 namespace Maui.MapLibre.Handlers;
 
-public class MapLibreMapController
-    : Object,
-    IMapLibreMapOptionsSink,
+public class MapLibreMapController : Object, IMapLibreMapController,
     Application.IActivityLifecycleCallbacks,
     IOnMapReadyCallback,
     IOnCameraTrackingChangedListener,
@@ -59,17 +57,17 @@ public class MapLibreMapController
     public MapView View => _mapView;
     
     // Events
-    public event Action<Org.Maplibre.Android.Maps.MapLibreMap>? OnMapReadyReceived;
+    public event Action<Map>? OnMapReadyReceived;
     public event Action? OnDidBecomeIdleReceived;
     public event Action<int>? OnCameraMoveStartedReceived;
     public event Action? OnCameraMoveReceived;
     public event Action? OnCameraIdleReceived;
     public event Action<int>? OnCameraTrackingChangedReceived;
     public event Action? OnCameraTrackingDismissedReceived;
-    public event Func<LatLng, bool>? OnMapClickReceived;
-    public event Func<LatLng, bool>? OnMapLongClickReceived;
-    public event Action<Style>? OnStyleLoadedReceived;
-    public event Action<Location>? OnUserLocationUpdateReceived;
+    public event Func<Geometry.LatLng, bool>? OnMapClickReceived;
+    public event Func<Geometry.LatLng, bool>? OnMapLongClickReceived;
+    public event Action<Maps.Style>? OnStyleLoadedReceived;
+    public event Action<Microsoft.Maui.Devices.Sensors.Location>? OnUserLocationUpdateReceived;
 
     private LocationEngineCallbackListener? _onLocationEngineCallback;
     
@@ -98,7 +96,7 @@ public class MapLibreMapController
 
         SetStyleString(_styleString);
 
-        OnMapReadyReceived?.Invoke(p0);
+        OnMapReadyReceived?.Invoke(new Map(p0));
     }
 
     public void OnStyleLoaded(Style p0)
@@ -117,17 +115,17 @@ public class MapLibreMapController
         _mapLibreMap.AddOnMapClickListener(this);
         _mapLibreMap.AddOnMapLongClickListener(this);
 
-        OnStyleLoadedReceived?.Invoke(p0);
+        OnStyleLoadedReceived?.Invoke(new Maps.Style(p0));
     }
 
     public bool OnMapLongClick(LatLng p0)
     {
-        return OnMapLongClickReceived?.Invoke(p0) ?? false;
+        return OnMapLongClickReceived?.Invoke(new Geometry.LatLng(p0.Latitude, p0.Longitude)) ?? false;
     }
 
     public bool OnMapClick(LatLng p0)
     {
-        return OnMapClickReceived?.Invoke(p0) ?? false;
+        return OnMapClickReceived?.Invoke(new Geometry.LatLng(p0.Latitude, p0.Longitude)) ?? false;
     }
 
     public void OnDidBecomeIdle()
@@ -162,7 +160,15 @@ public class MapLibreMapController
     
     private void OnUserLocationUpdate(Location? location) {
         if (location == null) return;
-        OnUserLocationUpdateReceived?.Invoke(location);
+        var newLocation =
+            new Microsoft.Maui.Devices.Sensors.Location(location.Latitude, location.Longitude, location.Altitude)
+                {
+                    Accuracy = location.Accuracy,
+                    Speed = location.Speed,
+                    Timestamp = new DateTimeOffset(new DateTime(location.Time)),
+                    Course = location.Bearing
+                };
+        OnUserLocationUpdateReceived?.Invoke(newLocation);
     }
     
     public void SetCameraTargetBounds(LatLngBounds? newBounds)
@@ -303,15 +309,15 @@ public class MapLibreMapController
         string sourceName,
         string? belowLayerId,
         string? sourceLayer,
-        PropertyValue[] properties,
-        Expression? filter,
+        IDictionary<string, object?> properties,
         float minZoom = 0,
         float maxZoom = 0,
         bool enableInteraction = false)
     {
         if (_style == null) return;
         var symbolLayer = new SymbolLayer(layerName, sourceName);
-        symbolLayer.SetProperties(properties);
+        var propertyValues = properties.Select(x => new PropertyValue(x.Key, x.Value as Object)).ToArray();
+        symbolLayer.SetProperties(propertyValues);
         if (sourceLayer != null)
         {
             symbolLayer.SourceLayer = sourceLayer;
@@ -323,10 +329,6 @@ public class MapLibreMapController
         if (maxZoom != 0)
         {
             symbolLayer.MaxZoom = maxZoom;
-        }
-        if (filter != null)
-        {
-            symbolLayer.Filter = filter;
         }
         if (belowLayerId != null)
         {
@@ -348,7 +350,6 @@ public class MapLibreMapController
         string? belowLayerId,
         string? sourceLayer,
         IDictionary<string, object?> properties,
-        Expression? filter,
         float minZoom = 0,
         float maxZoom = 0,
         bool enableInteraction = false)
@@ -369,10 +370,6 @@ public class MapLibreMapController
         {
             lineLayer.MaxZoom = maxZoom;
         }
-        if (filter != null)
-        {
-            lineLayer.Filter = filter;
-        }
         if (belowLayerId != null)
         {
             _style.AddLayerBelow(lineLayer, belowLayerId);
@@ -392,15 +389,15 @@ public class MapLibreMapController
         string sourceName,
         string? belowLayerId,
         string? sourceLayer,
-        PropertyValue[] properties,
-        Expression? filter,
+        IDictionary<string, object?> properties,
         float minZoom = 0,
         float maxZoom = 0,
         bool enableInteraction = false)
     {
         if (_style == null) return;
+        var propertyValues = properties.Select(x => new PropertyValue(x.Key, x.Value as Object)).ToArray();
         var fillLayer = new FillLayer(layerName, sourceName);
-        fillLayer.SetProperties(properties);
+        fillLayer.SetProperties(propertyValues);
         if (sourceLayer != null)
         {
             fillLayer.SourceLayer = sourceLayer;
@@ -412,10 +409,6 @@ public class MapLibreMapController
         if (maxZoom != 0)
         {
             fillLayer.MaxZoom = maxZoom;
-        }
-        if (filter != null)
-        {
-            fillLayer.Filter = filter;
         }
         if (belowLayerId != null)
         {
@@ -436,15 +429,15 @@ public class MapLibreMapController
         string sourceName,
         string? belowLayerId,
         string? sourceLayer,
-        PropertyValue[] properties,
-        Expression? filter,
+        IDictionary<string, object?> properties,
         float minZoom = 0,
         float maxZoom = 0,
         bool enableInteraction = false)
     {
         if (_style == null) return;
+        var propertyValues = properties.Select(x => new PropertyValue(x.Key, x.Value as Object)).ToArray();
         var fillLayer = new FillExtrusionLayer(layerName, sourceName);
-        fillLayer.SetProperties(properties);
+        fillLayer.SetProperties(propertyValues);
         if (sourceLayer != null)
         {
             fillLayer.SourceLayer = sourceLayer;
@@ -456,10 +449,6 @@ public class MapLibreMapController
         if (maxZoom != 0)
         {
             fillLayer.MaxZoom = maxZoom;
-        }
-        if (filter != null)
-        {
-            fillLayer.Filter = filter;
         }
         if (belowLayerId != null)
         {
@@ -480,15 +469,15 @@ public class MapLibreMapController
         string sourceName,
         string? belowLayerId,
         string? sourceLayer,
-        PropertyValue[] properties,
-        Expression? filter,
+        IDictionary<string, object?> properties,
         float minZoom = 0,
         float maxZoom = 0,
         bool enableInteraction = false)
     {
         if (_style == null) return;
+        var propertyValues = properties.Select(x => new PropertyValue(x.Key, x.Value as Object)).ToArray();
         var circleLayer = new CircleLayer(layerName, sourceName);
-        circleLayer.SetProperties(properties);
+        circleLayer.SetProperties(propertyValues);
         if (sourceLayer != null)
         {
             circleLayer.SourceLayer = sourceLayer;
@@ -500,10 +489,6 @@ public class MapLibreMapController
         if (maxZoom != 0)
         {
             circleLayer.MaxZoom = maxZoom;
-        }
-        if (filter != null)
-        {
-            circleLayer.Filter = filter;
         }
         if (belowLayerId != null)
         {
@@ -522,15 +507,15 @@ public class MapLibreMapController
     public void AddRasterLayer(
         string layerName,
         string sourceName,
-        PropertyValue[] properties,
-        Expression? filter,
+        IDictionary<string, object?> properties,
         float minZoom = 0,
         float maxZoom = 0,
         string? belowLayerId = null)
     {
         if (_style == null) return;
+        var propertyValues = properties.Select(x => new PropertyValue(x.Key, x.Value as Object)).ToArray();
         var rasterLayer = new RasterLayer(layerName, sourceName);
-        rasterLayer.SetProperties(properties);
+        rasterLayer.SetProperties(propertyValues);
         if (minZoom != 0)
         {
             rasterLayer.MinZoom = minZoom;
@@ -552,15 +537,15 @@ public class MapLibreMapController
     public void AddHillshadeLayer(
         string layerName,
         string sourceName,
-        PropertyValue[] properties,
-        Expression? filter,
+        IDictionary<string, object?> properties,
         float minZoom = 0,
         float maxZoom = 0,
         string? belowLayerId = null)
     {
         if (_style == null) return;
+        var propertyValues = properties.Select(x => new PropertyValue(x.Key, x.Value as Object)).ToArray();
         var hillshadeLayer = new HillshadeLayer(layerName, sourceName);
-        hillshadeLayer.SetProperties(properties);
+        hillshadeLayer.SetProperties(propertyValues);
         if (minZoom != 0)
         {
             hillshadeLayer.MinZoom = minZoom;
@@ -582,15 +567,15 @@ public class MapLibreMapController
     public void AddHeatmapLayer(
         string layerName,
         string sourceName,
-        PropertyValue[] properties,
-        Expression? filter,
+        IDictionary<string, object?> properties,
         float minZoom = 0,
         float maxZoom = 0,
         string? belowLayerId = null)
     {
         if (_style == null) return;
+        var propertyValues = properties.Select(x => new PropertyValue(x.Key, x.Value as Object)).ToArray();
         var heatmapLayer = new HeatmapLayer(layerName, sourceName);
-        heatmapLayer.SetProperties(properties);
+        heatmapLayer.SetProperties(propertyValues);
         if (minZoom != 0)
         {
             heatmapLayer.MinZoom = minZoom;

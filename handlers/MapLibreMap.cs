@@ -1,9 +1,12 @@
 ﻿using System.Text.Json;
 using System.Windows.Input;
 using GeoJSON.Text.Feature;
+using Maui.MapLibre.Handlers.EventArgs;
 using Maui.MapLibre.Handlers.Geometry;
 using Maui.MapLibre.Handlers.Properties;
 using Microsoft.Maui.Handlers;
+using Map = Maui.MapLibre.Handlers.Maps.Map;
+using Style = Maui.MapLibre.Handlers.Maps.Style;
 
 namespace Maui.MapLibre.Handlers;
 
@@ -251,7 +254,7 @@ public class MapLibreMap : StackLayout
         if (Handler is not MapLibreMapHandler handler) return;
         var controller = handler.Controller;
         var propertyValues = properties.ToDictionary();
-        controller.AddLineLayer(layerName, sourceName, belowLayerId, sourceLayer, propertyValues, null, minZoom, maxZoom, enableInteraction);
+        controller.AddLineLayer(layerName, sourceName, belowLayerId, sourceLayer, propertyValues, minZoom, maxZoom, enableInteraction);
     }
     
     public void AddSymbolLayer(
@@ -266,7 +269,7 @@ public class MapLibreMap : StackLayout
     {
         if (Handler is not MapLibreMapHandler handler) return;
         var controller = handler.Controller;
-        controller.AddLineLayer(layerName, sourceName, belowLayerId, sourceLayer, properties, null, minZoom, maxZoom, enableInteraction);
+        controller.AddLineLayer(layerName, sourceName, belowLayerId, sourceLayer, properties, minZoom, maxZoom, enableInteraction);
     }
     
     public void AddCircleLayer(
@@ -281,7 +284,7 @@ public class MapLibreMap : StackLayout
     {
         if (Handler is not MapLibreMapHandler handler) return;
         var controller = handler.Controller;
-        controller.AddLineLayer(layerName, sourceName, belowLayerId, sourceLayer, properties, null, minZoom, maxZoom, enableInteraction);
+        controller.AddLineLayer(layerName, sourceName, belowLayerId, sourceLayer, properties, minZoom, maxZoom, enableInteraction);
     }
 
     public void AddFillLayer(
@@ -296,7 +299,7 @@ public class MapLibreMap : StackLayout
     {
         if (Handler is not MapLibreMapHandler handler) return;
         var controller = handler.Controller;
-        controller.AddLineLayer(layerName, sourceName, belowLayerId, sourceLayer, properties, null, minZoom, maxZoom, enableInteraction);
+        controller.AddLineLayer(layerName, sourceName, belowLayerId, sourceLayer, properties, minZoom, maxZoom, enableInteraction);
     }
     
     public void AddRasterLayer(
@@ -311,7 +314,7 @@ public class MapLibreMap : StackLayout
     {
         if (Handler is not MapLibreMapHandler handler) return;
         var controller = handler.Controller;
-        controller.AddLineLayer(layerName, sourceName, belowLayerId, sourceLayer, properties, null, minZoom, maxZoom, enableInteraction);
+        controller.AddLineLayer(layerName, sourceName, belowLayerId, sourceLayer, properties, minZoom, maxZoom, enableInteraction);
     }
 
     public void AddHillshadeLayer(
@@ -326,7 +329,7 @@ public class MapLibreMap : StackLayout
     {
         if (Handler is not MapLibreMapHandler handler) return;
         var controller = handler.Controller;
-        controller.AddLineLayer(layerName, sourceName, belowLayerId, sourceLayer, properties, null, minZoom, maxZoom, enableInteraction);
+        controller.AddLineLayer(layerName, sourceName, belowLayerId, sourceLayer, properties, minZoom, maxZoom, enableInteraction);
     }
 
     public void AddHeatmapLayer(
@@ -341,92 +344,122 @@ public class MapLibreMap : StackLayout
     {
         if (Handler is not MapLibreMapHandler handler) return;
         var controller = handler.Controller;
-        controller.AddLineLayer(layerName, sourceName, belowLayerId, sourceLayer, properties, null, minZoom, maxZoom, enableInteraction);
+        controller.AddLineLayer(layerName, sourceName, belowLayerId, sourceLayer, properties, minZoom, maxZoom, enableInteraction);
     }
     
     // TODO Map parameter may want to return the controller here. 
-    public event EventHandler? MapReady;
+    public event EventHandler<MapReadyEventArgs>? MapReady;
     public event EventHandler? DidBecomeIdle;
     // TODO int parameter
-    public event EventHandler? CameraMoveStarted;
+    public event EventHandler<CameraMoveStartedEventArgs>? CameraMoveStarted;
     public event EventHandler? CameraMove;
     public event EventHandler? CameraIdle;
     // TODO int parameter
-    public event EventHandler? CameraTrackingChanged;
+    public event EventHandler<CameraTrackingChangedEventArgs>? CameraTrackingChanged;
     public event EventHandler? CameraTrackingDismissed;
     // LatLng and bool parameter
-    public event EventHandler? MapClick;
+    public event EventHandler<MapClickEventArgs>? MapClick;
     // LatLng and bool parameter
-    public event EventHandler? MapLongClick;
+    public event EventHandler<MapClickEventArgs>? MapLongClick;
     // TODO style parameter
-    public event EventHandler? StyleLoaded;
+    public event EventHandler<StyleLoadedEventArgs>? StyleLoaded;
     // TODO Location parameter
-    public event EventHandler? UserLocationUpdate;
+    public event EventHandler<UserLocationUpdateEventArgs>? UserLocationUpdate;
     
-    internal void OnMapReady()
+    internal void OnMapReady(Map map)
     {
-        MapReady?.Invoke(this, EventArgs.Empty);
-        if (MapReadyCommand.CanExecute(null)) MapReadyCommand.Execute(null);
+        var args = new MapReadyEventArgs
+        {
+            Map = map
+        };
+        MapReady?.Invoke(this, args);
+        if (MapReadyCommand.CanExecute(null)) MapReadyCommand.Execute(map);
     }
     
-    internal void OnStyleLoaded()
+    internal void OnStyleLoaded(Style style)
     {
-        StyleLoaded?.Invoke(this, EventArgs.Empty);
-        if (StyleLoadedCommand.CanExecute(null)) StyleLoadedCommand.Execute(null);
+        var args = new StyleLoadedEventArgs
+        {
+            Style = style
+        };
+        StyleLoaded?.Invoke(this, args);
+        if (StyleLoadedCommand.CanExecute(null)) StyleLoadedCommand.Execute(style);
     }
 
     internal void OnDidBecomeIdle()
     {
-        DidBecomeIdle?.Invoke(this, EventArgs.Empty);
+        DidBecomeIdle?.Invoke(this, System.EventArgs.Empty);
         if (DidBecomeIdleCommand.CanExecute(null)) DidBecomeIdleCommand.Execute(null);
     }
 
-    internal void OnCameraMoveStarted()
+    internal void OnCameraMoveStarted(int reason)
     {
-        CameraMoveStarted?.Invoke(this, EventArgs.Empty);
-        if (CameraMoveCommand.CanExecute(null)) CameraMoveCommand.Execute(null);
+        var args = new CameraMoveStartedEventArgs
+        {
+            Reason = reason
+        };
+        CameraMoveStarted?.Invoke(this, args);
+        if (CameraMoveCommand.CanExecute(null)) CameraMoveCommand.Execute(reason);
     }
 
     internal void OnCameraMove()
     {
-        CameraMove?.Invoke(this, EventArgs.Empty);
+        CameraMove?.Invoke(this, System.EventArgs.Empty);
         if (CameraMoveCommand.CanExecute(null)) CameraMoveCommand.Execute(null);
     }
 
     internal void OnCameraIdle()
     {
-        CameraIdle?.Invoke(this, EventArgs.Empty);
+        CameraIdle?.Invoke(this, System.EventArgs.Empty);
         if (CameraIdleCommand.CanExecute(null)) CameraIdleCommand.Execute(null);
     }
 
-    internal void OnCameraTrackingChanged()
+    internal void OnCameraTrackingChanged(int mode)
     {
-        CameraTrackingChanged?.Invoke(this, EventArgs.Empty);
-        if (CameraTrackingChangedCommand.CanExecute(null)) CameraTrackingChangedCommand.Execute(null);
+        var args = new CameraTrackingChangedEventArgs
+        {
+            Mode = mode
+        };
+        CameraTrackingChanged?.Invoke(this, args);
+        if (CameraTrackingChangedCommand.CanExecute(null)) CameraTrackingChangedCommand.Execute(mode);
     }
 
     internal void OnCameraTrackingDismissed()
     {
-        CameraTrackingDismissed?.Invoke(this, EventArgs.Empty);
+        CameraTrackingDismissed?.Invoke(this, System.EventArgs.Empty);
         if (CameraTrackingDismissedCommand.CanExecute(null)) CameraTrackingDismissedCommand.Execute(null);
     }
 
-    internal void OnMapClick()
+    internal bool OnMapClick(LatLng latLng)
     {
-        MapClick?.Invoke(this, EventArgs.Empty);
-        if (MapClickCommand.CanExecute(null)) MapClickCommand.Execute(null);
+        var args = new MapClickEventArgs
+        {
+            LatLng = latLng
+        };
+        MapClick?.Invoke(this, args);
+        if (MapClickCommand.CanExecute(null)) MapClickCommand.Execute(latLng);
+        return false;
     }
 
-    internal void OnMapLongClick()
+    internal bool OnMapLongClick(LatLng latLng)
     {
-        MapLongClick?.Invoke(this, EventArgs.Empty);
-        if (MapLongClickCommand.CanExecute(null)) MapLongClickCommand.Execute(null);
+        var args = new MapClickEventArgs
+        {
+            LatLng = latLng
+        };
+        MapLongClick?.Invoke(this, args);
+        if (MapLongClickCommand.CanExecute(null)) MapLongClickCommand.Execute(latLng);
+        return false;
     }
 
-    internal void OnUserLocationUpdate()
+    internal void OnUserLocationUpdate(Location location)
     {
-        UserLocationUpdate?.Invoke(this, EventArgs.Empty);
-        if (UserLocationUpdateCommand.CanExecute(null)) UserLocationUpdateCommand.Execute(null);
+        var args = new UserLocationUpdateEventArgs
+        {
+            Location = location
+        };
+        UserLocationUpdate?.Invoke(this, args);
+        if (UserLocationUpdateCommand.CanExecute(null)) UserLocationUpdateCommand.Execute(location);
     }
 }
 

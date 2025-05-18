@@ -1,6 +1,6 @@
 namespace Maui.MapLibre.Handlers;
 
-public class MapLibreMapController
+public class MapLibreMapController : IMapLibreMapController
 {
     
 }
