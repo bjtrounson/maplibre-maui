@@ -10,7 +10,7 @@
       To learn more, see: https://learn.microsoft.com/dotnet/core/deploying/trimming/prepare-libraries-for-trimming
     -->
     <IsTrimmable>true</IsTrimmable>
-    <RootNamespace>MapLibre.MaciOS.Binding</RootNamespace>
+    <RootNamespace>Org.Maplibre.MaciOS</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -18,24 +18,8 @@
     <ObjcBindingCoreSource Include="StructsAndEnums.cs" />
   </ItemGroup>
 
-  <!-- Reference to Xcode project -->
-  <ItemGroup>
-    <NLIXcodeProjectReference Include="../native/MapLibre/MapLibre.xcodeproj">
-      <SchemeName>MapLibre</SchemeName>
-      <SharpieNamespace>MapLibreMaciOS</SharpieNamespace>
-      <SharpieBind>true</SharpieBind>
-      <!-- Metadata applicable to @(NativeReference) will be used if set, otherwise the following defaults will be used:
-      <Kind>Framework</Kind>
-      <SmartLink>true</SmartLink>
-      -->
-    </NLIXcodeProjectReference>
-  </ItemGroup>
-
   <!-- Reference to NuGet for building bindings -->
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.Maui.NativeLibraryInterop.BuildTasks" Version="0.0.1-pre1" PrivateAssets="all" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Update="..\native\NewBinding" />
   </ItemGroup>
 </Project>
