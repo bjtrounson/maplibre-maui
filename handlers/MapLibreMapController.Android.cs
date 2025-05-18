@@ -2,6 +2,7 @@ using Android.App;
 using Android.Content;
 using Android.OS;
 using Android.Views;
+using Java.Net;
 using Maui.MapLibre.Handlers.Android;
 using Org.Maplibre.Android.Constants;
 using Org.Maplibre.Android.Geometry;
@@ -16,6 +17,8 @@ using Org.Maplibre.Geojson;
 using Application = Android.App.Application;
 using Location = Android.Locations.Location;
 using Exception = System.Exception;
+using ImageSource = Org.Maplibre.Android.Style.Sources.ImageSource;
+using LatLngQuad = Maui.MapLibre.Handlers.Geometry.LatLngQuad;
 using Object = Java.Lang.Object;
 using Style = Org.Maplibre.Android.Maps.Style;
 
@@ -189,7 +192,77 @@ public class MapLibreMapController
 
         geoJsonSource?.SetGeoJson(featureCollection);
     }
-    
+
+    public void AddRasterSource(string sourceName, string? tileUrl, string[]? tileUrlTemplates, int tileSize, int minZoom, int maxZoom)
+    {
+        RasterSource? rasterSource = null;
+        if (tileUrl != null)
+        {
+            rasterSource = new RasterSource(sourceName, tileUrl, tileSize);
+        }
+
+        if (tileUrlTemplates != null)
+        {
+            var tileSet = new TileSet("2.1.0", tileUrlTemplates);
+            tileSet.MinZoom = minZoom;
+            tileSet.MaxZoom = maxZoom;
+            rasterSource = new RasterSource(sourceName, tileSet, tileSize);
+        }
+
+        if (rasterSource == null) return;
+        _style?.AddSource(rasterSource);
+    }
+
+    public void AddRasterDemSource(string sourceName, string? tileUrl, string[]? tileUrlTemplates, int tileSize,
+        int minZoom, int maxZoom)
+    {
+        RasterDemSource? rasterSource = null;
+        if (tileUrl != null)
+        {
+            rasterSource = new RasterDemSource(sourceName, tileUrl, tileSize);
+        }
+        
+        if (tileUrlTemplates != null)
+        {
+            var tileSet = new TileSet("2.1.0", tileUrlTemplates);
+            tileSet.MinZoom = minZoom;
+            tileSet.MaxZoom = maxZoom;
+            rasterSource = new RasterDemSource(sourceName, tileSet, tileSize);
+        }
+        
+        if (rasterSource == null) return;
+        _style?.AddSource(rasterSource);
+    }
+
+    public void AddImageSource(string sourceName, string imageUri, LatLngQuad? coordinates)
+    {
+        if (string.IsNullOrEmpty(imageUri)) return;
+        var url = new URI(imageUri);
+        var imageSource = new ImageSource(sourceName, (Org.Maplibre.Android.Geometry.LatLngQuad?) coordinates?.ToPlatform(), url);
+        
+        _style?.AddSource(imageSource);
+    }
+
+    public void AddVectorSource(string sourceName, string? tileUrl, string[]? tileUrlTemplates, int minZoom, int maxZoom)
+    {
+        VectorSource? vectorSource = null;
+        if (tileUrl != null)
+        {
+            vectorSource = new VectorSource(sourceName, tileUrl);
+        }
+
+        if (tileUrlTemplates != null)
+        {
+            var tileSet = new TileSet("2.1.0", tileUrlTemplates);
+            tileSet.MinZoom = minZoom;
+            tileSet.MaxZoom = maxZoom;
+            vectorSource = new VectorSource(sourceName, tileSet);
+        }
+        
+        if (vectorSource == null) return;
+        _style?.AddSource(vectorSource);
+    }
+
     public void RemoveLayer(string layerId)
     {
         if (_style == null) return;

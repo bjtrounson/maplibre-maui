@@ -1,6 +1,7 @@
 ﻿using System.Text.Json;
 using System.Windows.Input;
 using GeoJSON.Text.Feature;
+using Maui.MapLibre.Handlers.Geometry;
 using Maui.MapLibre.Handlers.Properties;
 using Microsoft.Maui.Handlers;
 
@@ -205,6 +206,36 @@ public class MapLibreMap : StackLayout
         var controller = handler.Controller;
         var json = JsonSerializer.Serialize(collection);
         controller.AddGeoJsonSource(sourceName, json);
+    }
+
+    public void AddImageSource(string sourceName, string imageUri, LatLngQuad? coordinates)
+    {
+        if (Handler is not MapLibreMapHandler handler) return;
+        var controller = handler.Controller;
+        controller.AddImageSource(sourceName, imageUri, coordinates);
+    }
+
+    public void AddRasterSource(string sourceName, string? tileUrl, string[]? tileUrlTemplates, int tileSize,
+        int minZoom, int maxZoom)
+    {
+        if (Handler is not MapLibreMapHandler handler) return;
+        var controller = handler.Controller;
+        controller.AddRasterSource(sourceName, tileUrl, tileUrlTemplates, tileSize, minZoom, maxZoom);
+    }
+
+    public void AddRasterDemSource(string sourceName, string? tileUrl, string[]? tileUrlTemplates, int tileSize, int minZoom, int maxZoom)
+    {
+        if (Handler is not MapLibreMapHandler handler) return;
+        var controller = handler.Controller;
+        controller.AddRasterDemSource(sourceName, tileUrl, tileUrlTemplates, tileSize, minZoom, maxZoom);
+    }
+
+    public void AddVectorSource(string sourceName, string? tileUrl, string[]? tileUrlTemplates,
+        int minZoom, int maxZoom)
+    {
+        if (Handler is not MapLibreMapHandler handler) return;
+        var controller = handler.Controller;
+        controller.AddVectorSource(sourceName, tileUrl, tileUrlTemplates, minZoom, maxZoom);
     }
 
     public void AddLineLayer(

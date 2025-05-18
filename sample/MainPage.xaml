@@ -7,17 +7,8 @@
              xmlns:sources="clr-namespace:Maui.MapLibre.Handlers.Sources;assembly=Maui.Maplibre.Handlers"
              x:DataType="local:MainPageViewModel"
              x:Class="MauiSample.MainPage">
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
-            <RowDefinition Height="40" />
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
-        <maplibre:MapLibreMap Grid.Row="0" MyLocationEnabled="True" StyleUrl="https://demotiles.maplibre.org/style.json">
+        <maplibre:MapLibreMap MyLocationEnabled="True" StyleUrl="https://demotiles.maplibre.org/style.json">
             <sources:GeoJsonSource SourceName="{Binding SourceName}" FeatureCollection="{Binding Collection}" />
             <layers:LineLayer SourceName="{Binding SourceName}" LayerName="{Binding LayerName}" Properties="{Binding LayerProperties}" />
         </maplibre:MapLibreMap>
-    </Grid>
 </ContentPage>
