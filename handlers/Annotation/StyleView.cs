@@ -1,3 +1,5 @@
+using Maui.MapLibre.Handlers.EventArgs;
+
 namespace Maui.MapLibre.Handlers.Annotation;
 
 public class StyleView : ContentView
@@ -14,7 +16,7 @@ public class StyleView : ContentView
         parentMap.StyleLoaded += OnStyleLoaded;
     }
 
-    private void OnStyleLoaded(object? sender, EventArgs e)
+    private void OnStyleLoaded(object? sender, StyleLoadedEventArgs e)
     {
         AddLayerToParentMap();
         IsAdded = true;

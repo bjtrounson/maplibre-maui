@@ -41,69 +41,69 @@ public class MapLibreMap : StackLayout
     public static readonly BindableProperty MapLongClickCommandProperty = BindableProperty.Create(nameof(MapLongClickCommand), typeof(ICommand), typeof(MapLibreMap));
     public static readonly BindableProperty UserLocationUpdateCommandProperty = BindableProperty.Create(nameof(UserLocationUpdateCommand), typeof(ICommand), typeof(MapLibreMap));
     
-    public ICommand MapReadyCommand
+    public ICommand? MapReadyCommand
     {
-        get => (ICommand)GetValue(MapReadyCommandProperty);
+        get => (ICommand?)GetValue(MapReadyCommandProperty);
         set => SetValue(MapReadyCommandProperty, value);
     }
 
-    public ICommand StyleLoadedCommand
+    public ICommand? StyleLoadedCommand
     {
-        get => (ICommand)GetValue(StyleLoadedCommandProperty);
+        get => (ICommand?)GetValue(StyleLoadedCommandProperty);
         set => SetValue(StyleLoadedCommandProperty, value);
     }
 
-    public ICommand DidBecomeIdleCommand
+    public ICommand? DidBecomeIdleCommand
     {
-        get => (ICommand)GetValue(DidBecomeIdleCommandProperty);
+        get => (ICommand?)GetValue(DidBecomeIdleCommandProperty);
         set => SetValue(DidBecomeIdleCommandProperty, value);
     }
 
-    public ICommand CameraMoveStartedCommand
+    public ICommand? CameraMoveStartedCommand
     {
-        get => (ICommand)GetValue(CameraMoveStartedCommandProperty);
+        get => (ICommand?)GetValue(CameraMoveStartedCommandProperty);
         set => SetValue(CameraMoveStartedCommandProperty, value);
     }
 
-    public ICommand CameraMoveCommand
+    public ICommand? CameraMoveCommand
     {
-        get => (ICommand)GetValue(CameraMoveCommandProperty);
+        get => (ICommand?)GetValue(CameraMoveCommandProperty);
         set => SetValue(CameraMoveCommandProperty, value);
     }
 
-    public ICommand CameraIdleCommand
+    public ICommand? CameraIdleCommand
     {
-        get => (ICommand)GetValue(CameraIdleCommandProperty);
+        get => (ICommand?)GetValue(CameraIdleCommandProperty);
         set => SetValue(CameraIdleCommandProperty, value);
     }
 
-    public ICommand CameraTrackingChangedCommand
+    public ICommand? CameraTrackingChangedCommand
     {
-        get => (ICommand)GetValue(CameraTrackingChangedCommandProperty);
+        get => (ICommand?)GetValue(CameraTrackingChangedCommandProperty);
         set => SetValue(CameraTrackingChangedCommandProperty, value);
     }
 
-    public ICommand CameraTrackingDismissedCommand
+    public ICommand? CameraTrackingDismissedCommand
     {
-        get => (ICommand)GetValue(CameraTrackingDismissedCommandProperty);
+        get => (ICommand?)GetValue(CameraTrackingDismissedCommandProperty);
         set => SetValue(CameraTrackingDismissedCommandProperty, value);
     }
 
-    public ICommand MapClickCommand
+    public ICommand? MapClickCommand
     {
-        get => (ICommand)GetValue(MapClickCommandProperty);
+        get => (ICommand?)GetValue(MapClickCommandProperty);
         set =>  SetValue(MapClickCommandProperty, value);
     }
 
-    public ICommand MapLongClickCommand
+    public ICommand? MapLongClickCommand
     {
-        get => (ICommand)GetValue(MapLongClickCommandProperty);
+        get => (ICommand?)GetValue(MapLongClickCommandProperty);
         set =>   SetValue(MapLongClickCommandProperty, value);
     }
 
-    public ICommand UserLocationUpdateCommand
+    public ICommand? UserLocationUpdateCommand
     {
-        get => (ICommand)GetValue(UserLocationUpdateCommandProperty);
+        get => (ICommand?)GetValue(UserLocationUpdateCommandProperty);
         set =>   SetValue(UserLocationUpdateCommandProperty, value);
     }
 
@@ -373,7 +373,7 @@ public class MapLibreMap : StackLayout
             Map = map
         };
         MapReady?.Invoke(this, args);
-        if (MapReadyCommand.CanExecute(null)) MapReadyCommand.Execute(map);
+        MapReadyCommand?.Execute(map);
     }
     
     internal void OnStyleLoaded(Style style)
@@ -383,13 +383,13 @@ public class MapLibreMap : StackLayout
             Style = style
         };
         StyleLoaded?.Invoke(this, args);
-        if (StyleLoadedCommand.CanExecute(null)) StyleLoadedCommand.Execute(style);
+        StyleLoadedCommand?.Execute(style);
     }
 
     internal void OnDidBecomeIdle()
     {
         DidBecomeIdle?.Invoke(this, System.EventArgs.Empty);
-        if (DidBecomeIdleCommand.CanExecute(null)) DidBecomeIdleCommand.Execute(null);
+        DidBecomeIdleCommand?.Execute(null);
     }
 
     internal void OnCameraMoveStarted(int reason)
@@ -399,19 +399,19 @@ public class MapLibreMap : StackLayout
             Reason = reason
         };
         CameraMoveStarted?.Invoke(this, args);
-        if (CameraMoveCommand.CanExecute(null)) CameraMoveCommand.Execute(reason);
+        CameraMoveCommand?.Execute(reason);
     }
 
     internal void OnCameraMove()
     {
         CameraMove?.Invoke(this, System.EventArgs.Empty);
-        if (CameraMoveCommand.CanExecute(null)) CameraMoveCommand.Execute(null);
+        CameraMoveCommand?.Execute(null);
     }
 
     internal void OnCameraIdle()
     {
         CameraIdle?.Invoke(this, System.EventArgs.Empty);
-        if (CameraIdleCommand.CanExecute(null)) CameraIdleCommand.Execute(null);
+        CameraIdleCommand?.Execute(null);
     }
 
     internal void OnCameraTrackingChanged(int mode)
@@ -421,13 +421,13 @@ public class MapLibreMap : StackLayout
             Mode = mode
         };
         CameraTrackingChanged?.Invoke(this, args);
-        if (CameraTrackingChangedCommand.CanExecute(null)) CameraTrackingChangedCommand.Execute(mode);
+        CameraTrackingChangedCommand?.Execute(mode);
     }
 
     internal void OnCameraTrackingDismissed()
     {
         CameraTrackingDismissed?.Invoke(this, System.EventArgs.Empty);
-        if (CameraTrackingDismissedCommand.CanExecute(null)) CameraTrackingDismissedCommand.Execute(null);
+        CameraTrackingDismissedCommand?.Execute(null);
     }
 
     internal bool OnMapClick(LatLng latLng)
@@ -437,7 +437,7 @@ public class MapLibreMap : StackLayout
             LatLng = latLng
         };
         MapClick?.Invoke(this, args);
-        if (MapClickCommand.CanExecute(null)) MapClickCommand.Execute(latLng);
+        MapClickCommand?.Execute(latLng);
         return false;
     }
 
@@ -448,7 +448,7 @@ public class MapLibreMap : StackLayout
             LatLng = latLng
         };
         MapLongClick?.Invoke(this, args);
-        if (MapLongClickCommand.CanExecute(null)) MapLongClickCommand.Execute(latLng);
+        MapLongClickCommand?.Execute(latLng);
         return false;
     }
 
@@ -459,7 +459,7 @@ public class MapLibreMap : StackLayout
             Location = location
         };
         UserLocationUpdate?.Invoke(this, args);
-        if (UserLocationUpdateCommand.CanExecute(null)) UserLocationUpdateCommand.Execute(location);
+        UserLocationUpdateCommand?.Execute(location);
     }
 }
 
