@@ -6,7 +6,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Org.Maplibre.Android", "and
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Maui.Maplibre.Handlers", "handlers\Maui.Maplibre.Handlers.csproj", "{341281A5-1F1A-43D6-8732-9D23445ED105}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MapLibre.MaciOS.Binding", "macios\MapLibre.MaciOS.Binding\MapLibre.MaciOS.Binding.csproj", "{FE1119EC-DF29-49BB-A15E-DEA8B20E1249}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Org.Maplibre.MaciOS", "macios\Org.Maplibre.MaciOS.csproj", "{FE1119EC-DF29-49BB-A15E-DEA8B20E1249}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

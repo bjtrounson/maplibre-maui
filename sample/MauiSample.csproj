@@ -60,6 +60,5 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\handlers\Maui.Maplibre.Handlers.csproj" />
-	  <ProjectReference Include="..\Maui.Maplibre.Handlers\Maui.Maplibre.Handlers.csproj" />
 	</ItemGroup>
 </Project>

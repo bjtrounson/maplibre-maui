@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net8.0-ios;net8.0-maccatalyst</TargetFrameworks>
+    <TargetFramework>net9.0-ios</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>true</ImplicitUsings>
     <IsBindingProject>true</IsBindingProject>
@@ -12,6 +12,19 @@
     <IsTrimmable>true</IsTrimmable>
     <RootNamespace>Org.Maplibre.MaciOS</RootNamespace>
   </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Linker flags, Frameworks, WeakFrameworks, etc can be found in the podspec -->
+    <!-- eg: https://github.com/CocoaPods/Specs/blob/master/Specs/7/e/f/GoogleUserMessagingPlatform/2.3.0/GoogleUserMessagingPlatform.podspec.json -->
+    <NativeReference Include="./MapLibre.xcframework">
+      <Kind>Static</Kind>
+      <SmartLink>True</SmartLink>
+      <ForceLoad>True</ForceLoad>
+      <LinkerFlags>-ObjC</LinkerFlags>
+      <Frameworks>WebKit</Frameworks>
+      <WeakFrameworks>MapLibre</WeakFrameworks>
+    </NativeReference>
+  </ItemGroup>
 
   <ItemGroup>
     <ObjcBindingApiDefinition Include="ApiDefinition.cs" />
