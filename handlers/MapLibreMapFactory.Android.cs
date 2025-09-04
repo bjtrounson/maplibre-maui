@@ -4,7 +4,7 @@ using Org.Maplibre.Android.Camera;
 
 namespace Maui.MapLibre.Handlers;
 
-public class MapLibreMapFactory
+public partial class MapLibreMapFactory
 {
     public static MapLibreMapController Create(Activity activity, Context context, Dictionary<string, object> args) {
         var builder = new MapLibreMapBuilder();

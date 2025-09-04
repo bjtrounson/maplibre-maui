@@ -1,5 +1,4 @@
-using Org.Maplibre.Android.Geometry;
-using Org.Maplibre.Android.Location.Engine;
+using Maui.MapLibre.Handlers.Geometry;
 
 namespace Maui.MapLibre.Handlers;
 
@@ -41,5 +40,5 @@ public interface IMapLibreMapOptionsSink
 
     void SetAttributionButtonMargins(int x, int y);
 
-    void SetLocationEngineProperties(LocationEngineRequest? locationEngineRequest);
+    //void SetLocationEngineProperties(LocationEngineRequest? locationEngineRequest);
 }

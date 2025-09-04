@@ -1,19 +1,22 @@
 ﻿#nullable enable
 
-using Android.Views;
+using UIView = Android.Views.View;
+using ViewGroup = Android.Views.ViewGroup;
 using Android.Widget;
-using View = Android.Views.View;
+using Microsoft.Maui.Handlers;
 
 namespace Maui.MapLibre.Handlers;
 
-public partial class MapLibreMapHandler
+public partial class MapLibreMapHandler : ViewHandler<MapLibreMap, UIView>    
 {
     private MapLibreMapController _controller = null!;
     private string _styleUrl = null!;
     
     public IMapLibreMapController Controller => _controller;
+    
+    public MapLibreMapHandler() : base(PropertyMapper) { }
 
-    protected override View CreatePlatformView()
+    protected override UIView CreatePlatformView()
     {
         if (Platform.CurrentActivity == null)
         {

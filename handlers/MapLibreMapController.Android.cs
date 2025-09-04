@@ -641,7 +641,12 @@ public class MapLibreMapController : Object, IMapLibreMapController,
         _locationComponent.LocationEngineRequest = locationEngineRequest;
     }
 
-    
+
+    public void SetCameraTargetBounds(Geometry.LatLngBounds bounds)
+    {
+        _mapLibreMap?.SetLatLngBoundsForCameraTarget(bounds.ToPlatform() as LatLngBounds);
+    }
+
     public void SetCompassEnabled(bool compassEnabled) {
         if (_mapLibreMap == null) return;
         _mapLibreMap.UiSettings.CompassEnabled = compassEnabled;
